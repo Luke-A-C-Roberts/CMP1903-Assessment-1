@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,6 +45,7 @@ namespace CMP1903M_Assessment_1
         public int[] AnalyseText()
         {
             int[] values = new int[5];
+            values.DefaultIfEmpty<int>(0);
 
             char[] inputChars = Text.ToCharArray();
 
@@ -62,56 +63,24 @@ namespace CMP1903M_Assessment_1
                 sentenceProgress += c.ToString();
             }
             // string[] sentences = Text.Split('.');
-            int sentenceCount = 0;
             foreach (string s in sentences)
             {
-                if (s.Trim().Length != 0) { sentenceCount++; };
+                if (s.Trim().Length != 0) { values[0]++; };
             }
-            values[0] = sentenceCount;
             #endregion
 
-            #region vowels & consonants
-            int vowelCount = 0;
-            int consonantsCount = 0;
-            foreach (char c in inputChars)
-            {
-                if (Vowels.Contains(Char.ToLower(c)))
-                {
-                    vowelCount++;
-                }
-                else
-                {
-                    consonantsCount++;
-                }
-            }
-            values[1] = vowelCount;
-            values[2] = consonantsCount;
-            #endregion
-
-            #region upper & lower cases
-            int upperCount = 0;
-            int lowerCount = 0;
-            foreach (char c in inputChars)
-            {
-                if (Char.IsUpper(c))
-                {
-                    upperCount++;
-                }
-                else
-                {
-                    lowerCount++;
-                }
-            }
-            values[3] = upperCount;
-            values[4] = lowerCount;
-            #endregion
-
-            // TODO: Count freq. of characters and stuff
+            #region characters
             int[] characterFrequencies = new int[26];
             foreach (char c in inputChars)
             {
-                if (Char.IsLetter(c))
-                {
+                if (Vowels.Contains(Char.ToLower(c))) { values[1]++; } // increments vowels' count
+                else if (!(Vowels.Contains(Char.ToLower(c))) && Char.IsLetter(c)) { values[2]++; }; // increments consonants' count
+
+                if (Char.IsUpper(c)) { values[3]++; } // increments upper case count
+                else { values[4]++; } // increments lower case count
+
+                // TODO: Count freq. of characters and stuff
+                if (Char.IsLetter(c)) {
                     characterFrequencies[Convert.ToInt32(Char.ToLower(c)) - 97]++;
                 }
             }
@@ -119,6 +88,7 @@ namespace CMP1903M_Assessment_1
             LetterFrequencies = characterFrequencies;
             Statistics = values;
             return values;
+            #endregion
         }
 
         private const int LongWordThreshold = 7;
